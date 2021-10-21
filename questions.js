@@ -2,6 +2,7 @@ const DEFAULTS = {
   amount: 20,
   search: null,
   featured: true,
+  meta: false,
   width: 2400,
   height: 1600,
 }
@@ -38,6 +39,17 @@ const requiredQuestions = {
       return val === 'Yes'
     },
     default: DEFAULTS.featured,
+  },
+
+  meta: {
+    type: 'list',
+    name: 'meta',
+    message: 'Save images MetaData?',
+    choices: ['Yes', 'No', ],
+    filter: function(val) {
+      return val === 'Yes'
+    },
+    default: DEFAULTS.meta,
   },
 
   orientation: {

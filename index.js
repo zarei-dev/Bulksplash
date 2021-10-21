@@ -5,9 +5,9 @@ const path = require('path')
 const ProgressBar = require('progress')
 const inquirer = require('inquirer')
 const { firstQuestions, nextQuestions, } = require('./questions')
+/*eslint-disable */
 
 const bulksplash = async (args) => {
-  
   let basePath = "";
 
   const options = {}
@@ -18,7 +18,7 @@ const bulksplash = async (args) => {
         type: 'input',
         name: 'path',
         message: '📂 Which directory do you want to save to?',
-        default: "."
+        default: '.'
       },
       {
         type: 'list',
@@ -179,13 +179,17 @@ const bulksplash = async (args) => {
   let c = 0;
   const saveCredits = (credits, dest) => {
     credits = Object.values(credits)
-
-    fs.writeFile(dest + "/bulksplash-credits.json", JSON.stringify(credits, null, "\t"), "utf8", (err) => {
-      if(err){
-        return;
-      }
-      console.log("🗂  A .json file with details about the photographers has been saved to " + dest + "/bulksplash-credits.json\n")
+    console.log(credits)
+    Object.values(credits).forEach(v => {
+      fs.writeFile(dest + `/omegado-frische-${v.id}.txt`, JSON.stringify(v, null, "\t"), "utf8", (err) => {
+        if(err){
+          return;
+        }
+        console.log("🗂  A .json file with details about the photographers has been saved to " + dest + "/bulksplash-credits.json\n")
+      })
     })
+
+    
   }
 
   const download = ({ imageUrl, dest, img }) => {
@@ -197,9 +201,9 @@ const bulksplash = async (args) => {
 
     let {owner} = img
 
-    if(!(owner.username in creditsAlreadyPrinted)){
+    if(!(owner.id in creditsAlreadyPrinted)){
       console.log(`📸 ${owner.name} (${owner.link})`)
-      creditsAlreadyPrinted[owner.username] = owner;
+      creditsAlreadyPrinted[owner.id] = owner;
     }
     
     c+=1;
@@ -229,7 +233,7 @@ const bulksplash = async (args) => {
 
     // make request to Unsplash download endpoint to meet API requirements
     // we don't download from endpoint because it deosn't let us download custom sizes
-    request(`https://api.unsplash.com/photos/${img.id}/download?client_id=${apiKey}`, (error, response, body) => {
+    request(`https://api.unsplash.com/photos/${img.id}/download?client_id=${apiKey}`, (error, response) => {
       // do nothing
     })
   }
@@ -260,10 +264,22 @@ const bulksplash = async (args) => {
               images.push({
                 imageUrl: img,
                 id: v.id,
-                owner: {
-                  username: v.user.username,
-                  name: v.user.name,
-                  link: v.user.links.html
+								owner: {
+									id: v.id,
+									created_at: v.created_at,
+									updated_at: v.updated_at,
+									promoted_at: v.promoted_at,
+									width: v.width,
+									height: v.height,
+									color: v.color,
+									description: v.description,
+									alt_description: v.alt_description,
+									link: v.links.self,
+									likes: v.likes,
+									author_instagram: v.user.instagram_username,
+                  author_username: v.user.username,
+                  author_name: v.user.name,
+                  author_link: v.user.links.html
                 }
               })
 
@@ -303,7 +319,7 @@ const bulksplash = async (args) => {
     images.map(img => {
       download({
         imageUrl: img.imageUrl,
-        dest: path.join(process.cwd(), `${basePath}/bulksplash-${img.owner.username}-${img.id}.jpg`),
+        dest: path.join(process.cwd(), `${basePath}/omegado-frische-${img.id}.jpg`),
         img
       })
     })
@@ -312,5 +328,6 @@ const bulksplash = async (args) => {
 
   
 };
+/*eslint-disable */
 
 module.exports = bulksplash;
