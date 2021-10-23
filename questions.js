@@ -149,7 +149,7 @@ const nextQuestions = ({ required = true, side = 'width', }) => {
   return conditionalQuestions[`${required ? 'required' : ''}${side}`]
 }
 
-module.exports = {
+export {
   firstQuestions,
-  nextQuestions,
+  nextQuestions
 }

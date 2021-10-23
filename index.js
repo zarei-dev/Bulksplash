@@ -1,13 +1,43 @@
-const request = require('request')
-const fs = require('fs')
-const https = require('https')
-const path = require('path')
-const ProgressBar = require('progress')
-const inquirer = require('inquirer')
-const { firstQuestions, nextQuestions, } = require('./questions')
-/*eslint-disable */
+import fetch from 'node-fetch';
+import request from 'request';
+import * as fs from 'fs';
+import https from 'https';
+import * as path from 'path';
+import ProgressBar from 'progress';
+import inquirer from 'inquirer';
+import { firstQuestions } from './questions.js';
+import { nextQuestions } from './questions.js';
 
-const bulksplash = async (args) => {
+// const fetch = require('node-fetch');
+// const request = require('request')
+// const fs = require('fs')
+// const https = require('https')
+// const path = require('path')
+// const ProgressBar = require('progress')
+// const inquirer = require('inquirer')
+// const { firstQuestions, nextQuestions, } = require('./questions')
+// const { resolve } = require('path/posix')
+/*eslint-disable */
+function imageData(image_id) {
+  const response = fetch(`https://api.unsplash.com/photos/${image_id}?client_id=ttUqGcFjnw_kag6oa9X-oM_9H5BSHFG32rFa9sIbwKs`).then(function(u){ return u.json()})
+  // const resData = await response.json();
+  return response;
+}
+console.log(imageData('Z3r7p3DqXeM'));
+console.log('fuck');
+const bulksplashh = async (args) => {
+
+
+
+  // async function imageData(image_id) {
+  //   return new Promise((resolve, reject) => {
+  //     fetch(`https://api.unsplash.com/photos/${image_id}?client_id=${apiKey}`)
+  //       .then(res => res.json())
+  //       .then(data => resolve(data))
+  //       .catch(err => reject(err));
+  //   });
+
+
   let basePath = "";
 
   const options = {}
@@ -140,7 +170,7 @@ const bulksplash = async (args) => {
   }
   
 
-  let apiKeys = ["KU76e-L5LwjeOxB98AWi_NJ1BfnSe1bFQ1A7Aul9foA", "ttUqGcFjnw_kag6oa9X-oM_9H5BSHFG32rFa9sIbwKs", "HQtqmJS7bjUyzlWJd8D1EKSmugm6CNTlYul58-DVN3Q", "fymYR5htky3PF1O4-P8YN4FqcpVim6lHd2S5bv79F5M"];
+  let apiKeys = ["fymYR5htky3PF1O4-P8YN4FqcpVim6lHd2S5bv79F5M", "ttUqGcFjnw_kag6oa9X-oM_9H5BSHFG32rFa9sIbwKs", "HQtqmJS7bjUyzlWJd8D1EKSmugm6CNTlYul58-DVN3Q", "KU76e-L5LwjeOxB98AWi_NJ1BfnSe1bFQ1A7Aul9foA"];
   let apiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
 
   // console.log(options)
@@ -181,7 +211,9 @@ const bulksplash = async (args) => {
     credits = Object.values(credits)
     console.log(credits)
     Object.values(credits).forEach(v => {
-      fs.writeFile(dest + `/omegado-frische-${v.id}.txt`, JSON.stringify(v, null, "\t"), "utf8", (err) => {
+      let imageDataa = imageData(v.id)
+      console.log(imageDataa);
+      fs.writeFile(dest + `/omegado-${v.username}-${v.id}.txt`, JSON.stringify(imageDataa, null, "\t"), "utf8", (err) => {
         if(err){
           return;
         }
@@ -260,28 +292,17 @@ const bulksplash = async (args) => {
           body = JSON.parse(body)
 
           Object.values(body).forEach(v => {
-              const img = (options.random && (options.width || options.height)) ? v.urls.custom : v.urls.full
-              images.push({
-                imageUrl: img,
+            const img = (options.random && (options.width || options.height)) ? v.urls.custom : v.urls.full
+            
+            images.push({
+              imageUrl: img,
+              id: v.id,
+              owner: {
                 id: v.id,
-								owner: {
-									id: v.id,
-									created_at: v.created_at,
-									updated_at: v.updated_at,
-									promoted_at: v.promoted_at,
-									width: v.width,
-									height: v.height,
-									color: v.color,
-									description: v.description,
-									alt_description: v.alt_description,
-									link: v.links.self,
-									likes: v.likes,
-									author_instagram: v.user.instagram_username,
-                  author_username: v.user.username,
-                  author_name: v.user.name,
-                  author_link: v.user.links.html
-                }
-              })
+                name: v.user.name,
+                username: v.user.username,
+              },
+            })
 
             })
 
@@ -319,7 +340,7 @@ const bulksplash = async (args) => {
     images.map(img => {
       download({
         imageUrl: img.imageUrl,
-        dest: path.join(process.cwd(), `${basePath}/omegado-frische-${img.id}.jpg`),
+        dest: path.join(process.cwd(), `${basePath}/omegado-${img.owner.username}-${img.id}.jpg`),
         img
       })
     })
@@ -329,5 +350,4 @@ const bulksplash = async (args) => {
   
 };
 /*eslint-disable */
-
-module.exports = bulksplash;
+export { bulksplashh };
