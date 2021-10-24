@@ -192,7 +192,7 @@ const bulksplashh = async (args) => {
   }
 
 
-  let apiKeys = ["fymYR5htky3PF1O4-P8YN4FqcpVim6lHd2S5bv79F5M", "ttUqGcFjnw_kag6oa9X-oM_9H5BSHFG32rFa9sIbwKs", "HQtqmJS7bjUyzlWJd8D1EKSmugm6CNTlYul58-DVN3Q", "KU76e-L5LwjeOxB98AWi_NJ1BfnSe1bFQ1A7Aul9foA"];
+  let apiKeys = ["KU76e-L5LwjeOxB98AWi_NJ1BfnSe1bFQ1A7Aul9foA"];
   let apiKey = apiKeys[Math.floor(Math.random() * apiKeys.length)];
 
   // console.log(options)
@@ -409,14 +409,20 @@ const bulksplashh = async (args) => {
       complete: "=",
       incomplete: " "
     })
-
-    images.map(img => {
-      download({
-        imageUrl: img.imageUrl,
-        dest: path.join(process.cwd(), `${basePath}/omegado-${img.owner.username}-${img.id}.jpg`),
-        img
-      })
-    })
+    let image_ids= [];
+    images.map(img => {image_ids.push(img.id)})
+    var file = fs.createWriteStream('ids.txt');
+    file.on('error', function(err) { /* error handling */ });
+    file.write(JSON.stringify(image_ids, null, "\t"));
+    console.log(images);
+    file.end();
+    // images.map(img => {
+    //   download({
+    //     imageUrl: img.imageUrl,
+    //     dest: path.join(process.cwd(), `${basePath}/omegado-${img.owner.username}-${img.id}.jpg`),
+    //     img
+    //   })
+    // })
   })
 
 
