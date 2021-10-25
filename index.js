@@ -409,20 +409,20 @@ const bulksplashh = async (args) => {
       complete: "=",
       incomplete: " "
     })
-    let image_ids= [];
-    images.map(img => {image_ids.push(img.id)})
-    var file = fs.createWriteStream('ids.txt');
-    file.on('error', function(err) { /* error handling */ });
-    file.write(JSON.stringify(image_ids, null, "\t"));
-    console.log(images);
-    file.end();
-    // images.map(img => {
-    //   download({
-    //     imageUrl: img.imageUrl,
-    //     dest: path.join(process.cwd(), `${basePath}/omegado-${img.owner.username}-${img.id}.jpg`),
-    //     img
-    //   })
-    // })
+    // let image_ids= [];
+    // images.map(img => {image_ids.push(img.id)})
+    // var file = fs.createWriteStream('ids.txt');
+    // file.on('error', function(err) { /* error handling */ });
+    // file.write(JSON.stringify(image_ids, null, "\t"));
+    // console.log(images);
+    // file.end();
+    images.map(img => {
+      download({
+        imageUrl: img.imageUrl,
+        dest: path.join(process.cwd(), `${basePath}/omegado-${img.owner.username}-${img.id}.jpg`),
+        img
+      })
+    })
   })
 
 
